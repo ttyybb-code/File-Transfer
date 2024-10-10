@@ -70,15 +70,21 @@ def receave_file(socket, file_name):
                 file.write(full_msg[HEADERSIZE:])
 
 
-def main():
-    files = receive_pickle(s)
-    print("Available files to download:")
-
-    dir = "clientFiles"
+def show_files(files):
     if files is None:
         return
     for file in files:
         print(file)
+    return
+
+
+def main():
+    files = receive_pickle(s)
+    print("Available files to download:")
+    if files is None:
+        return
+    dir = "clientFiles"
+    show_files(files)
     while True:
         action = menu()
         send_msg(s, action)
@@ -100,18 +106,18 @@ def main():
                     print("Invalid file selected. Please try again.")
             send_msg(s, file_name[len(dir):])
             send_file(s, file_name)
+            files = receive_pickle(s)
+            if files is None:
+                return
         elif action == "download":
             file_name = ""
             while file_name not in files:
                 file_name = input("Enter the name of the file: ")
                 if file_name not in files:
-                    print("Invalid file")
+                    print("Invalid file; please choose an exsisting file")
+                    show_files(files)
             send_msg(s, file_name)
             receave_file(s, f"{dir}/{file_name}")
-            if files is None:
-                return
-            for file in files:
-                print(file)
 
 
 main()

@@ -78,6 +78,7 @@ while True:
             file_name = receive_msg(clientsocket)
             print(f"{address} is uploading {file_name}")
             receave_file(clientsocket, f"{directory}/{file_name}")
+            send_dir(clientsocket, directory)
         elif action is None:
             print(f"Connection with {address} has been terminated")
             break
